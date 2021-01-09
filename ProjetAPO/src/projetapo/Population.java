@@ -45,7 +45,7 @@ public class Population {
      * @param r nombre de personnes retirées
      * @param e nombre de personnes exposées
      */
-    public Population(double s, double i, double r, double e) {
+    public Population(double s, double e, double i, double r) {
         this.s = s;
         this.i = i;
         this.r = r;
