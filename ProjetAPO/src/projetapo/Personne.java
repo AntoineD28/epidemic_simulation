@@ -14,14 +14,49 @@ import java.util.Random;
  */
 public class Personne {
     
+    /**
+     * id unique d'une personne
+     */
     private int id;
-    private char etat;
-    private int position_x;
-    private int position_y;  
-    private char deplacement;
-    private boolean masque;
     
-    /* prochain id à attribuer */
+    /**
+     * etat de la personnes (S, E, I ou R)
+     */
+    private char etat;  
+    
+    /**
+     * position en x de la personne
+     */
+    private int position_x; 
+    
+    /**
+     * position en y de la personne
+     */
+    private int position_y; 
+    
+    /**
+     * sens de déplacement (f,r,l,t,b)
+     */
+    private char deplacement; 
+    
+    /**
+     * Utilisé pour savoir si la personne porte le masque ou non
+     */
+    private boolean masque;         
+    
+    /**
+     *  Utilisé pour savoir si la personne est en quarantaine ou non
+     */
+    private boolean quarantaine;  
+    
+    /**
+     * Utilisé pour savoir depuis combien de jour la personne est en quarantaine
+     */
+    private int nbJourQuarantaine;
+    
+    /**
+     * prochain id à attribuer
+     */
     private static int numero = 1;
     
     /**
@@ -30,8 +65,9 @@ public class Personne {
      * @param N largeur du monde
      * @param M longueur du monde
      * @param m est ce que la personne porte un masque
+     * @param q est ce que la personne est en quarantaine
      */
-    public Personne(char e, int N, int M, boolean m) {
+    public Personne(char e, int N, int M, boolean m, boolean q) {
         Random r = new Random();
         
         id = Personne.numero;
@@ -43,6 +79,8 @@ public class Personne {
         // Déplacement par defaut fixe 
         deplacement = 'f';
         masque = m;
+        quarantaine = q;
+        nbJourQuarantaine = 0; //Lorsqu'une personne est créée, elle a passé 0 jour en quarantaine
     }
     
     
@@ -96,6 +134,22 @@ public class Personne {
     
     /**
      * 
+     * @return si la personne est en quarantaine ou non
+     */
+    public boolean getQuarantaine(){
+        return quarantaine;
+    }
+    
+    /**
+     * 
+     * @return le nombre de jour passé en quarantaine par la personne 
+     */
+    public int getJourQuarantaine(){
+        return nbJourQuarantaine;
+    }
+    
+    /**
+     * 
      * @param e mettre à jour l'etat de la personne
      */
     public void setEtat(char e){
@@ -125,6 +179,24 @@ public class Personne {
     public void setDeplacement(char c){
         deplacement = c;
     }
+    
+    /**
+     * 
+     * @param q Mettre à jour si la personne est en quarantaine ou non
+     */
+    public void setQuarantaine(boolean q){
+        quarantaine = q;
+    }
+    
+    /**
+     * 
+     * @param j Mettre à jour le nombre de jour passé en quarantaine par la personne 
+     */
+    public void setJourQuarantaine(int j){
+        nbJourQuarantaine = j;
+    }
+    
+    
     
     /**
      * Méthode qui compare la position de 2 personnes.
@@ -221,7 +293,9 @@ public class Personne {
      * Elle affiche tous les attributs qui définissent une personne
      */
     public void afficherPersonne(){
-        System.out.println("id : " + id + " etat : " + etat + " position_x : " + position_x + " position_y : " + position_y + " deplacement : " + deplacement + " masque : " + masque);
+        System.out.println("id : " + id + " etat : " + etat + " position_x : " + position_x + " position_y : " + 
+                position_y + " deplacement : " + deplacement + " masque : " + masque + " quanrantaine : " + 
+                quarantaine + " Durée quarantaine : " + nbJourQuarantaine);
     }
     
 }
