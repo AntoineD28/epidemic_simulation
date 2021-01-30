@@ -14,11 +14,20 @@ import java.util.ArrayList;
  */
 public class Monde {
     
-    /* Largeur du monde */
+    /**
+     * Largeur du monde
+     */
     public static int N;
-    /* Longueur du monde */
+
+    /**
+     * Longueur du monde
+     */
     public static int M;
-    private Population p;
+    
+    /**
+     * Population utilisé
+     */
+    private Population p; 
     
     
     /**
