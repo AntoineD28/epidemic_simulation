@@ -5,6 +5,8 @@
  */
 package projetapo;
 
+import java.util.ArrayList;
+
 /**
  * Classe servant à représenter une population
  *
@@ -12,17 +14,11 @@ package projetapo;
  */
 public class Population {
 
-    private double s;
-    private double i;
-    private double r;
-    private double e;
+    private ArrayList<Personne> S;
+    private ArrayList<Personne> E;
+    private ArrayList<Personne> I;
+    private ArrayList<Personne> R;
 
-    /**
-     * Constructeur par défaut
-     */
-    public Population() {
-        this(100, 1, 0);
-    }
 
     /**
      * Constructeur pour une simulation avec 3 catégories (SIR)
@@ -32,13 +28,43 @@ public class Population {
      * @param r nombre de personnes retirées
      */
     public Population(double s, double i, double r) {
-        this.s = s;
-        this.i = i;
-        this.r = r;
+        Personne pers;
+        S = new ArrayList<Personne>();
+        I = new ArrayList<Personne>();
+        R = new ArrayList<Personne>();
+        double rand; 
+        boolean m = false;
+        
+        for (int j=1; j<=s; j++){ //On ajoute s personnes dans la liste S
+            if (Modele.masque){ // 80% de chance qu'une personne porte un masque
+                rand = Math.random();
+                m = rand < 0.8;
+            }
+            pers = new Personne('S',Monde.N,Monde.M,m);
+            S.add(pers);
+        }
+        
+        for (int j=1; j<=i; j++){ //On ajoute i personnes dans la liste I
+            if (Modele.masque){ // 80% de chance qu'une personne porte un masque
+                rand = Math.random();
+                m = rand < 0.8;
+            }
+            pers = new Personne('I',Monde.N,Monde.M,m);
+            I.add(pers);
+        }
+        
+        for (int j=1; j<=r; j++){ //On ajoute r personnes dans la liste R
+            if (Modele.masque){ // 80% de chance qu'une personne porte un masque
+                rand = Math.random();
+                m = rand < 0.8;
+            }
+            pers = new Personne('R',Monde.N,Monde.M,m);
+            R.add(pers);
+        }
     }
 
     /**
-     * Constructeur pour une simulation avec 4 catégories
+     * Constructeur pour une simulation avec 4 catégories (SEIR(N))
      *
      * @param s nombre de personnes saines
      * @param i nombre de personnes infectées
@@ -46,73 +72,200 @@ public class Population {
      * @param e nombre de personnes exposées
      */
     public Population(double s, double e, double i, double r) {
-        this.s = s;
-        this.i = i;
-        this.r = r;
-        this.e = e;
+        Personne pers;
+        S = new ArrayList<Personne>();
+        E = new ArrayList<Personne>();
+        I = new ArrayList<Personne>();
+        R = new ArrayList<Personne>();
+        double rand; 
+        boolean m = false;
+            
+        for (int j=1; j<=s; j++){   //On ajoute s personnes dans la liste S
+            if (Modele.masque){ // 80% de chance qu'une personne porte un masque
+                rand = Math.random();
+                m = rand < 0.8;
+            }
+            pers = new Personne('S',Monde.N,Monde.M,m);
+            S.add(pers);
+        }
+        
+        for (int j=1; j<=i; j++){   //On ajoute e personnes dans la liste E
+            if (Modele.masque){ // 80% de chance qu'une personne porte un masque
+                rand = Math.random();
+                m = rand < 0.8;
+            }
+            pers = new Personne('E',Monde.N,Monde.M,m);
+            E.add(pers);
+        }
+        
+        for (int j=1; j<=i; j++){   //On ajoute i personnes dans la liste I
+            if (Modele.masque){ // 80% de chance qu'une personne porte un masque
+                rand = Math.random();
+                m = rand < 0.8;
+            }
+            pers = new Personne('I',Monde.N,Monde.M,m);
+            I.add(pers);
+        }
+        
+        for (int j=1; j<=r; j++){   //On ajoute r personnes dans la liste R
+            if (Modele.masque){ // 80% de chance qu'une personne porte un masque
+                rand = Math.random();
+                m = rand < 0.8;
+            }
+            pers = new Personne('R',Monde.N,Monde.M,m);
+            R.add(pers);
+        }
     }
 
+    
+    
     /**
      * 
-     * @return le nombre de personnes Saines 
+     * @return la liste des personnes saines 
      */
-    public double getS() {
-        return s;
+    public ArrayList<Personne> getS() {
+        return S;
     }
     
     /**
      * 
-     * @return le nombre de personnes Infectées 
+     * @return la liste des personnes exposées 
      */
-    public double getI() {
-        return i;
+    public ArrayList<Personne> getE() {
+        return E;
     }
-
+    
     /**
      * 
-     * @return le nombre de personnes Retirées 
+     * @return la liste des personnes infectées 
      */
-    public double getR() {
-        return r;
+    public ArrayList<Personne> getI() {
+        return I;
     }
-
+    
     /**
      * 
-     * @return le nombre de personnes Exposées 
+     * @return la liste des personnes retirées 
      */
-    public double getE() {
-        return e;
+    public ArrayList<Personne> getR() {
+        return R;
     }
-
+    
+    
     /**
-     * 
-     * @param s mettre à jour le nombre de personnes Saines
+     * Méthode qui génère le prochain déplacement de toute la population.
+     * @param c vaut true si il y a confinement, false sinon
      */
-    public void setS(double s) {
-        this.s = s;
+    public void prochainDeplacement(boolean c){
+        for (int j=0; j<S.size(); j++){ // Genere le deplacement pour les personnes saines
+            if (c)
+                S.get(j).genererDeplacementConfinement();
+            else
+                S.get(j).genererDeplacement();
+        }
+        
+        for (int j=0; j<E.size(); j++){ // Genere le deplacement pour les personnes exposées
+            if (c)
+                E.get(j).genererDeplacementConfinement();
+            else
+                E.get(j).genererDeplacement();
+        }
+        
+        for (int j=0; j<I.size(); j++){ // Genere le deplacement pour les personnes infectées
+            if (c)
+                I.get(j).genererDeplacementConfinement();
+            else
+                I.get(j).genererDeplacement();
+        }
+        
+        for (int j=0; j<R.size(); j++){ // Genere le deplacement pour les personnes retirées
+            if (c)
+                R.get(j).genererDeplacementConfinement();
+            else
+                R.get(j).genererDeplacement();
+        }
     }
-
+    
     /**
-     * 
-     * @param i mettre à jour le nombre de personnes Infectées
+     * Méthode qui déplace toute la population.
      */
-    public void setI(double i) {
-        this.i = i;
+    public void deplacer(){
+        for (int j=0; j<S.size(); j++){
+            S.get(j).deplacer();
+        }
+        
+        for (int j=0; j<E.size(); j++){
+            E.get(j).deplacer();
+        }
+        
+        for (int j=0; j<I.size(); j++){
+            I.get(j).deplacer();
+        }
+        
+        for (int j=0; j<R.size(); j++){
+            R.get(j).deplacer();
+        }
     }
-
+    
     /**
-     * 
-     * @param r mettre à jour le nombre de personnes Retirées
+     * Méthode qui calcul le nombre de personnes dans une case du monde.
+     * @param x abcisse de la case
+     * @param y ordonnée de la case
+     * @return le nombre de personnes dans cette case
      */
-    public void setR(double r) {
-        this.r = r;
-    }
-
+    public int nbPersonneCase(int x, int y){
+        int nb = 0; 
+        int abs, ord;
+        for (int j=0; j<S.size(); j++){
+            abs = S.get(j).getPosition_x();
+            ord = S.get(j).getPosition_y();
+            if ((abs == x) && (ord == y))
+                nb++;
+        }
+        
+        for (int j=0; j<E.size(); j++){
+            abs = E.get(j).getPosition_x();
+            ord = E.get(j).getPosition_y();
+            if ((abs == x) && (ord == y))
+                nb++;
+        }
+        
+        for (int j=0; j<I.size(); j++){
+            abs = I.get(j).getPosition_x();
+            ord = I.get(j).getPosition_y();
+            if ((abs == x) && (ord == y))
+                nb++;
+        }
+        
+        for (int j=0; j<R.size(); j++){
+            abs = R.get(j).getPosition_x();
+            ord = R.get(j).getPosition_y();
+            if ((abs == x) && (ord == y))
+                nb++;
+        }
+        return nb;
+    } 
+    
     /**
-     * 
-     * @param e mettre à jour le nombre de personnes Exposées
+     * Méthode qui affiche la population.
+     * Elle affiche chaque personne avec un retour à la ligne
      */
-    public void setE(double e) {
-        this.e = e;
+    public void afficherPopulation(){
+        for (int j=0; j<S.size(); j++){
+            S.get(j).afficherPersonne();
+        }
+        
+        for (int j=0; j<E.size(); j++){
+            E.get(j).afficherPersonne();
+        }
+        
+        for (int j=0; j<I.size(); j++){
+            I.get(j).afficherPersonne();
+        }
+        
+        for (int j=0; j<R.size(); j++){
+            R.get(j).afficherPersonne();
+        }
     }
+    
 }
