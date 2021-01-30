@@ -14,11 +14,26 @@ import java.util.ArrayList;
  */
 public class Population {
 
+    /**
+     * Liste des personnes saines
+     */
     private ArrayList<Personne> S;
-    private ArrayList<Personne> E;
+    
+    /**
+     * Liste des personnes exposées
+     */
+    private ArrayList<Personne> E; 
+    
+    /**
+     * Liste des personnes infectées
+     */
     private ArrayList<Personne> I;
-    private ArrayList<Personne> R;
-
+    
+    /**
+     * Liste des personnes retirées
+     */
+    private ArrayList<Personne> R; 
+ 
 
     /**
      * Constructeur pour une simulation avec 3 catégories (SIR)
@@ -34,13 +49,14 @@ public class Population {
         R = new ArrayList<Personne>();
         double rand; 
         boolean m = false;
+        boolean q = false;
         
         for (int j=1; j<=s; j++){ //On ajoute s personnes dans la liste S
             if (Modele.masque){ // 80% de chance qu'une personne porte un masque
                 rand = Math.random();
                 m = rand < 0.8;
             }
-            pers = new Personne('S',Monde.N,Monde.M,m);
+            pers = new Personne('S',Monde.N,Monde.M,m,false);
             S.add(pers);
         }
         
@@ -49,7 +65,11 @@ public class Population {
                 rand = Math.random();
                 m = rand < 0.8;
             }
-            pers = new Personne('I',Monde.N,Monde.M,m);
+            if (Modele.quarantaine){ // 60% de chance qu'une personne infectée de la population initiale soit en quarantaine
+                rand = Math.random();
+                q = rand < 0.6;
+            }
+            pers = new Personne('I',Monde.N,Monde.M,m,q);
             I.add(pers);
         }
         
@@ -58,7 +78,7 @@ public class Population {
                 rand = Math.random();
                 m = rand < 0.8;
             }
-            pers = new Personne('R',Monde.N,Monde.M,m);
+            pers = new Personne('R',Monde.N,Monde.M,m,false);
             R.add(pers);
         }
     }
@@ -79,13 +99,14 @@ public class Population {
         R = new ArrayList<Personne>();
         double rand; 
         boolean m = false;
+        boolean q = false;
             
         for (int j=1; j<=s; j++){   //On ajoute s personnes dans la liste S
             if (Modele.masque){ // 80% de chance qu'une personne porte un masque
                 rand = Math.random();
                 m = rand < 0.8;
             }
-            pers = new Personne('S',Monde.N,Monde.M,m);
+            pers = new Personne('S',Monde.N,Monde.M,m,false);
             S.add(pers);
         }
         
@@ -94,7 +115,7 @@ public class Population {
                 rand = Math.random();
                 m = rand < 0.8;
             }
-            pers = new Personne('E',Monde.N,Monde.M,m);
+            pers = new Personne('E',Monde.N,Monde.M,m,false);
             E.add(pers);
         }
         
@@ -103,7 +124,11 @@ public class Population {
                 rand = Math.random();
                 m = rand < 0.8;
             }
-            pers = new Personne('I',Monde.N,Monde.M,m);
+            if (Modele.quarantaine){ // 60% de chance qu'une personne infectée de la population initiale soit en quarantaine
+                rand = Math.random();
+                q = rand < 0.6;
+            }
+            pers = new Personne('I',Monde.N,Monde.M,m,q);
             I.add(pers);
         }
         
@@ -112,7 +137,7 @@ public class Population {
                 rand = Math.random();
                 m = rand < 0.8;
             }
-            pers = new Personne('R',Monde.N,Monde.M,m);
+            pers = new Personne('R',Monde.N,Monde.M,m,false);
             R.add(pers);
         }
     }
