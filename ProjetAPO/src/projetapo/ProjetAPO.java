@@ -18,10 +18,11 @@ public class ProjetAPO {
      */
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        boolean spacialisation, polPublique, confinement = false, masque = false, quarantaine = false, vaccination = false;
+        boolean spatialisation, polPublique, confinement = false, masque = false, quarantaine = false, vaccination = false;
         String conf, ma, quar, vaccin;
         int N = 0, M = 0; 
         double beta = 0, alpha = 0, mu = 0, eta = 0, exposé = 0, probaVaccin = 0;
+        int tempsQuarantaine = 0;
         
         System.out.println("-------------SIMULATION D'UNE EPIDEMIE-------------");
         
@@ -44,7 +45,7 @@ public class ProjetAPO {
             System.out.print("Veuillez choisir la valeur du parametre beta (Probabilité de se faire infecter) : ");
             beta = sc.nextDouble();
             while((beta < 0) || (beta > 1)){
-                System.out.println("Vous n'avez pas entré une valeur entre 0 et 1");
+                System.out.print("Vous n'avez pas entré une valeur entre 0 et 1, rééssayez : ");
                 beta = sc.nextDouble();
             } 
         }
@@ -52,7 +53,7 @@ public class ProjetAPO {
             System.out.print("Veuillez choisir la valeur du parametre beta (Probabilité de devenir exposé) : ");
             beta = sc.nextDouble();
             while((beta < 0) || (beta > 1)){
-                System.out.println("Vous n'avez pas entré une valeur entre 0 et 1");
+                System.out.print("Vous n'avez pas entré une valeur entre 0 et 1, rééssayez : ");
                 beta = sc.nextDouble();
             }
         }
@@ -60,7 +61,7 @@ public class ProjetAPO {
         System.out.print("Veuillez choisir la valeur du parametre gamma (Probabilité de ne plus être infecté) : ");
         double gamma = sc.nextDouble();
         while((gamma < 0) || (gamma > 1)){
-            System.out.println("Vous n'avez pas entré une valeur entre 0 et 1");
+            System.out.print("Vous n'avez pas entré une valeur entre 0 et 1, rééssayez : ");
             gamma = sc.nextDouble();
         }
         // Parametre alpha 
@@ -68,7 +69,7 @@ public class ProjetAPO {
             System.out.print("Veuillez choisir la valeur du parametre alpha (Probabilité de devenir infecté) : ");
             alpha = sc.nextDouble();
             while((alpha < 0) || (alpha > 1)){
-                System.out.println("Vous n'avez pas entré une valeur entre 0 et 1");
+                System.out.print("Vous n'avez pas entré une valeur entre 0 et 1, rééssayez : ");
                 alpha = sc.nextDouble();
             } 
         }
@@ -77,13 +78,13 @@ public class ProjetAPO {
             System.out.print("Veuillez choisir la valeur du parametre mu (Probabilité décés) : ");
             mu = sc.nextDouble();
             while((mu < 0) || (mu > 1)){
-                System.out.println("Vous n'avez pas entré une valeur entre 0 et 1");
+                System.out.print("Vous n'avez pas entré une valeur entre 0 et 1, rééssayez : ");
                 mu = sc.nextDouble();
             } 
             System.out.print("Veuillez choisir la valeur du parametre eta (Probilité naissance) : ");
             eta = sc.nextDouble();
             while((eta < 0) || (eta > 1)){
-                System.out.println("Vous n'avez pas entré une valeur entre 0 et 1");
+                System.out.print("Vous n'avez pas entré une valeur entre 0 et 1, rééssayez : ");
                 eta = sc.nextDouble();
             } 
         }
@@ -91,7 +92,7 @@ public class ProjetAPO {
         
         System.out.println("\n-------------TEMPS-------------");
         // Choix du temps
-        System.out.print("Temps de la simulation : ");
+        System.out.print("Temps de la simulation (en jours) : ");
         int temps = sc.nextInt();
         while(temps < 0){
             System.out.print("\nVous n'avez pas entré une valeur positive, rééssayez : ");
@@ -132,29 +133,29 @@ public class ProjetAPO {
         } 
         
         
-        System.out.println("\n-------------CHOIX SPACIALISATION-------------");
-        // Choix Spacialisation  
-        System.out.print("Voulez vous activer la Spacialisation ? (oui/non) : ");
+        System.out.println("\n-------------CHOIX SPATIALISATION-------------");
+        // Choix spatialisation  
+        System.out.print("Voulez vous activer la spatialisation ? (oui/non) : ");
         sc.nextLine();
         String spac = sc.nextLine();
         while(!(spac.equals("oui") || spac.equals("non") || spac.equals("o") || 
                 spac.equals("n") || spac.equals("Oui") || spac.equals("Non"))){
-            System.out.println("\nVous n'avez pas répondu par oui ou non, voulez vous activer la Spacialisation ? ");
+            System.out.println("\nVous n'avez pas répondu par oui ou non, voulez vous activer la spatialisation ? ");
             spac = sc.nextLine();
         }
         
         if(spac.equals("oui") || spac.equals("Oui") || spac.equals("o"))
-            spacialisation = true;
+            spatialisation = true;
         else 
-            spacialisation = false; 
+            spatialisation = false; 
         
-        // Si la spacialisation est activée, on peut choisir la taille du Monde
-        if(spacialisation){
+        // Si la spatialisation est activée, on peut choisir la taille du Monde
+        if(spatialisation){
             System.out.println("\n-------------CHOIX TAILLE MONDE-------------");
             System.out.println("Veuillez choisir la taille du monde :");
-            System.out.print("N = ");
+            System.out.print("N (largeur) = ");
             N = sc.nextInt();
-            System.out.print("M = ");
+            System.out.print("M (longeur) = ");
             M = sc.nextInt();
         }
         
@@ -215,8 +216,19 @@ public class ProjetAPO {
             else 
                 quarantaine = false; 
             
+            // Si la quarantaine est activée, il faut demander la durée de la mise en quarantaine
+            if(quarantaine){
+                System.out.print("Quel est la durée de mise en quarantaine (en jours) : ");
+                tempsQuarantaine = sc.nextInt();
+                while(tempsQuarantaine<0){
+                    System.out.print("Vous avez entré un nombre négatif, recommencez : ");
+                    tempsQuarantaine = sc.nextInt();
+                }
+            }
+            
             // Vaccination
             System.out.print("Vaccination ? (oui/non) : ");
+            sc.nextLine();
             vaccin = sc.nextLine();
             while(!(vaccin.equals("oui") || vaccin.equals("non") || vaccin.equals("o") || 
                 vaccin.equals("n") || vaccin.equals("Oui") || vaccin.equals("Non"))){
@@ -242,18 +254,18 @@ public class ProjetAPO {
         
         System.out.println("\n\n\n\n-------------RESULTAT SIMULATION-------------");
         if(modele.equals("SIR") || modele.equals("sir")){
-            Sir s = new Sir(beta,gamma,sain,infecté,guéris,temps,N,M,confinement,masque,quarantaine,vaccination,probaVaccin);
-            s.simulationSpacialisation();
+            Sir s = new Sir(beta,gamma,sain,infecté,guéris,temps,N,M,confinement,masque,quarantaine,vaccination,tempsQuarantaine,probaVaccin);
+            s.simulation();
         }
         
         if(modele.equals("SEIR") || modele.equals("seir")){
-            Seir s = new Seir(beta,alpha,gamma,sain,exposé,infecté,guéris,temps,N,M,confinement,masque,quarantaine,vaccination,probaVaccin);
-            s.simulationSpacialisation();
+            Seir s = new Seir(beta,alpha,gamma,sain,exposé,infecté,guéris,temps,N,M,confinement,masque,quarantaine,vaccination,tempsQuarantaine,probaVaccin);
+            s.simulation();
         }
         
         if(modele.equals("SEIRN") || modele.equals("seirn")){
-            SeirN s = new SeirN(beta,alpha,gamma,mu,eta,sain,exposé,infecté,guéris,temps,N,M,confinement,masque,quarantaine,vaccination,probaVaccin);
-            s.simulationSpacialisation();
+            SeirN s = new SeirN(beta,alpha,gamma,mu,eta,sain,exposé,infecté,guéris,temps,N,M,confinement,masque,quarantaine,vaccination,tempsQuarantaine,probaVaccin);
+            s.simulation();
         }
     }
     
