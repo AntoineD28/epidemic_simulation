@@ -13,24 +13,59 @@ import java.util.ArrayList;
  */
 public abstract class Modele {
     
-    /* temps de la simulation */
+    /**
+     * temps de la simulation (en jours)
+     */
     protected int temps;
-    /* parametre beta */
+
+    /**
+     * parametre beta
+     */
     protected double beta;
-    /* parametre gamma */
-    protected double gamma;
-    /* Monde utilisé par le modele */
-    protected Monde m;
+
+    /**
+     * parametre gamma
+     */
+    protected double gamma; 
+
+    /**
+     * Monde utilisé par le modele
+     */
+    protected Monde m; 
+
+    /**
+     * Est ce que le confinement est activé ?
+     */
     protected boolean confinement;
-    public static boolean masque;
-    protected boolean quarantaine;
-    protected boolean vaccination;
-    /* Proba de se faire vacciner si ce dernier est activé */
-    protected double probaVaccin;
+
+    /**
+     * Est ce que le port du masque est activé ?
+     */
+    public static boolean masque; 
+
+    /**
+     * Est ce que la mise en quarantaine est activé ?
+     */
+    public static boolean quarantaine; 
+
+    /**
+     * Est ce que la vaccination est activé ?
+     */
+    protected boolean vaccination; 
+    
+    /**
+     * Durée de la mise en quarantaine
+     */
+    protected int tempsQuarantaine; 
+
+    /**
+     * Probabbilité de se faire vacciner
+     */
+    protected double probaVaccin; 
 
     
     /**
-     * Constructeur avec tous les pramètres du modele SEIR  (spacialisation, politique publique et vaccination)
+     * Constructeur avec tous les pramètres d'un modele
      * @param b parametre de transmission
      * @param g parametre de guérison
      * @param s personnes saines
@@ -44,10 +79,11 @@ public abstract class Modele {
      * @param ma port du masque
      * @param q quarantaine
      * @param v vaccination 
+     * @param tq Durée de la mise en quarantaine
      * @param pv Probabilité d'être vacciné à un pas de temps
      */
     public Modele(double b, double g, double s, double e, double i, double r, int t, int N, int M, boolean c, 
-            boolean ma, boolean q, boolean v, double pv) {
+            boolean ma, boolean q, boolean v, int tq, double pv) {
         temps = t;
         beta = b; 
         gamma = g;
@@ -55,6 +91,7 @@ public abstract class Modele {
         masque = ma;
         quarantaine = q;
         vaccination = v;
+        tempsQuarantaine = tq;
         probaVaccin = pv;
         m = new Monde(s,e,i,r,N,M);
     }
@@ -63,15 +100,15 @@ public abstract class Modele {
     
     
     /**
-     * Méthode qui gère les nouvelles guérisons (marche avec ou sans l'utilisation de la spacialisation).
-     * @param gueris Nombre de nouvelles personnes guéris
+     * Méthode qui gère les nouvelles personnes retirées.
+     * @param retiré Nombre de nouvelles personnes retires
      */
-    public void guerison(int gueris){
+    public void retire(int retiré){
         Population p = m.getPopulation();
         ArrayList<Personne> Inf = p.getI(); // Liste des personnes infectées
         ArrayList<Personne> Recovered = p.getR(); // Liste des personnes retirées
         
-        for (int i=0; i<gueris; i++){
+        for (int i=0; i<retiré; i++){
             Recovered.add(Inf.get(0)); //On fait passer 1 personne infectée dans le tableau des retirées
             Inf.remove(0); //On supprime cet infecté
         }
@@ -93,20 +130,31 @@ public abstract class Modele {
     }
     
     /**
-     * Méthode qui gère les nouvelles infections.
-     * @param inf Nombre de nouvelles personnes infectées
+     * Méthode qui gère la durée de quarantaine des personnes infectées.
      */
-    public abstract void infection(int inf);
+    public void quarantaine(){
+        Population p = m.getPopulation();
+        ArrayList<Personne> Inf = p.getI();    // Liste des personnes Infectées
+        int nq;
+        Personne pers;
+        
+        for (int i=0; i<Inf.size(); i++){ // Pour toutes les personnes infectées
+            pers = Inf.get(i);
+            if(pers.getQuarantaine()){  // Si la personne est en quarantaine
+                nq = pers.getJourQuarantaine() + 1; // Nouvelle durée de la quarantaine
+                if(nq >= tempsQuarantaine){   // Si elle est resté assez de temps en quarantaine, alors elle n'est plus en quarantaine
+                    pers.setQuarantaine(false);
+                    pers.setJourQuarantaine(0);
+                }
+                else 
+                    pers.setJourQuarantaine(nq); // Si elle n'est pas resté assez de temps, on met à jour la durée de sa quarantaine
+            }
+        }
+    }
     
     /**
-     * Procédure qui réalise la simulation du modèle.
+     * Procédure qui réalise la simulation des différents modèles.
      * Affiche chaque jour le nouveau nombre de personnes pour chaque catégories
      */
     public abstract void simulation();
-    
-    /**
-     * Procédure qui réalise la simulation du modèle SIR avec la spacialisation.
-     * Affiche chaque jour le nouveau nombre de personnes pour chaque catégories
-     */
-    public abstract void simulationSpacialisation();
 }
