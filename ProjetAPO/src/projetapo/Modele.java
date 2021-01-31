@@ -63,6 +63,11 @@ public abstract class Modele {
      */
     protected double probaVaccin; 
 
+    /**
+     * Utilisé pour avoir les données dans l'interface graphique
+     */
+    public Object[][] data; 
+
     
     /**
      * Constructeur avec tous les pramètres d'un modele
@@ -93,10 +98,17 @@ public abstract class Modele {
         vaccination = v;
         tempsQuarantaine = tq;
         probaVaccin = pv;
+        data = new Object[t+1][6];
         m = new Monde(s,e,i,r,N,M);
     }
     
-    
+    /**
+     * 
+     * @return le tableau data
+     */
+    public Object[][] getData(){
+        return data;
+    }
     
     
     /**
