@@ -249,7 +249,7 @@ public class SeirN extends Modele{
         Population p = m.getPopulation();
         int S = p.getS().size(), E = p.getE().size(), I = p.getI().size(), R = p.getR().size();
         double new_I = 0, new_R = 0, new_S = 0, DC_S = 0, DC_E = 0, DC_I = 0, DC_R = 0, nbPersVaccin;
-        double N = S+E+I+R;
+        int N = S+E+I+R;
         
         System.out.println("Jour 0 : Population = " + N + " S = " + S + " E = " + E + " I = " + I
                 + " R = " + R);// Affichage du Jour 0
@@ -310,6 +310,14 @@ public class SeirN extends Modele{
             // Affichage
             System.out.println("Jour " + j +  " Population = " + N + " S = " + S + " E = " + E + " I = " + I
                 + " R = " + R);
+            
+            // Remplissage tableau de données pour l'interface
+            data[j-1][0] = j;
+            data[j-1][1] = N;
+            data[j-1][2] = S;
+            data[j-1][3] = 0;
+            data[j-1][4] = I;
+            data[j-1][5] = R;
         }
     }
 }
