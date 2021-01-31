@@ -146,7 +146,7 @@ public class Sir extends Modele{
         Population p = m.getPopulation();
         int S = p.getS().size(), I = p.getI().size(), R = p.getR().size();
         double new_R = 0, nbPersVaccin;
-        double N = S+I+R;
+        int N = S+I+R;
         
         System.out.println("Jour 0 : Population = " + N + " S = " + S + " I = " + I + " R = " + R);
 
@@ -185,6 +185,14 @@ public class Sir extends Modele{
             
             // Affichage
             System.out.println("Jour " + j + " Population = " + N + " S = " + + S + " I = " + I + " R = " + R);
+
+            // Remplissage tableau de données pour l'interface
+            data[j-1][0] = j;
+            data[j-1][1] = N;
+            data[j-1][2] = S;
+            data[j-1][3] = 0;
+            data[j-1][4] = I;
+            data[j-1][5] = R;
         }
     }
 }
